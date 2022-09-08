@@ -1,11 +1,11 @@
-FROM debian:buster AS stage_build
+FROM --platform=linux/arm64/v8 debian:buster AS stage_build
 
 # ------------------------------------------------------------------------------
 
 # ATM 1.38.40+ is supported, older will fail with missing /b/s/w/ir/k/install/fastcomp/bin/llc
-ARG EMSCRIPTEN_VERSION=1.38.43
+ARG EMSCRIPTEN_VERSION=3.1.20
 ARG EMSCRIPTEN_SDK=${EMSCRIPTEN_VERSION}-fastcomp
-ARG EMSDK_CHANGESET=master
+ARG EMSDK_CHANGESET=main
 
 # ------------------------------------------------------------------------------
 
@@ -38,9 +38,7 @@ RUN echo "## Start building" \
 RUN  echo "## Get EMSDK" \
     &&  git clone https://github.com/emscripten-core/emsdk.git ${EMSDK} \
     &&  cd ${EMSDK} && git reset --hard ${EMSDK_CHANGESET} \
-    \
-    &&  ./emsdk.py update-tags \
-&&  echo "## Done"
+    &&  echo "## Done"
 
 RUN  echo "## Install Emscripten" \
     &&  cd ${EMSDK} \
@@ -196,7 +194,7 @@ RUN echo "## Create symbolic links" \
 # -------------------------------- STAGE DEPLOY --------------------------------
 # ------------------------------------------------------------------------------
 
-FROM debian:buster-slim AS stage_deploy
+FROM --platform=linux/arm64/v8 debian:buster-slim AS stage_deploy
 
 COPY --from=stage_build /emsdk_portable /emsdk_portable
 

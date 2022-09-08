@@ -1,0 +1,1 @@
+docker build --no-cache -t emirdeliz/trzeci-emscripten-fastcomp-arm64 .
